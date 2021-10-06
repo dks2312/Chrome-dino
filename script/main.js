@@ -1,60 +1,93 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
+var HTMLScore = document.getElementById('score');
+
 canvas.width = window.innerWidth - 100;
 canvas.height = window.innerHeight - 100;
 
-var dinoImg = new Image();
-dinoImg.src = './image/dino.png';
+class Object{
+  constructor(){
+    this.x;
+    this.y;
+    this.width;
+    this.height;
+    this.img;
+  }
 
-var dino ={
-  x : 10,
-  y : 200,
-  width : 50,
-  height : 50,
   draw(){
-    ctx.fillStyle = 'green';
+    var image = new Image();
+    image.src = this.img;
+
     ctx.fillRect(this.x,this.y, this.width,this.height);
-    ctx.drawImage(dinoImg, this.x, this.y);
+    ctx.drawImage(image, this.x, this.y);
   }
 }
+
+class Dino extends Object{
+  init(){ // this를 사용하기 위해 선언이 되고 난 후에 초기화를 해준다
+    this.x = 10;
+    this.y = 200;
+    this.width = 50;
+    this.height = 50;
+    this.img = './image/dino.png';
+  }
+}
+var dino = new Dino();
+dino.init();
 dino.draw();
 
 
-
-var cactusImg = new Image();
-cactusImg.src = './image/cactus.png';
-
-class Cactus{
-  constructor(){
+class Cactus extends Object{
+  cactus1(){
     this.x = 500;
     this.y = 200;
     this.width = 50;
     this.height = 50;
+    this.img = './image/cactus1.png';
   }
-  draw(){
-    ctx.fillStyle = 'red';
-    ctx.fillRect(this.x,this.y, this.width,this.height);
-    ctx.drawImage(cactusImg, this.x, this.y);
+  cactus2(){
+    this.x = 500;
+    this.y = 150;
+    this.width = 50;
+    this.height = 100;
+    this.img = './image/cactus2.png';
+  }
+  cactus3(){
+    this.x = 500;
+    this.y = 280;
+    this.width = 50;
+    this.height = 30;
+    this.img = './image/cactus3.png';
   }
 }
 
 
+var animation;
 var timer = 0;
 var cactusArray = [];
 var jumpTime = 0;
-var animation
+var score = 0;
 
 function update(){
   animation = requestAnimationFrame(update);
   timer++;
+  
 
   ctx.clearRect(0,0, canvas.width, canvas.height);
-
-  if(timer % 120 === 0){
+  HTMLScore.innerHTML = score;
+  if(timer % 10 === 0){
+    score += 1 + Math.floor(timer / 1000); // 1000프레임 넘을 때마다 추가 점수 +1 
+  }
+  if(timer % 100 === 0){  // 120프레임마다 적 생성
     var cactus = new Cactus();
-    cactusArray.push(cactus);
+    var cactusType = Math.ceil(1 + Math.random() * 2);
     
+    if(cactusType == 1) cactus.cactus1();
+    else if(cactusType == 2) cactus.cactus2();
+    else if(cactusType == 3) cactus.cactus3();
+
+    cactusArray.push(cactus);
   }
 
   cactusArray.forEach((a, i, o)=>{
@@ -62,7 +95,7 @@ function update(){
     if(a.x < 0){
       o.splice(i, 1);
     }
-    a.x--;
+    a.x -= 4;
 
     isCollition(dino, a);
     
@@ -71,13 +104,14 @@ function update(){
 
   
   if(jumping){ // 점프일 때 위로 올라감
-    dino.y--;
+    dino.y -= 6;
     jumpTime++;
   }
   else if(dino.y < 200){ // 점프가 멈췄을 때 바닥200까지 내려감
-    dino.y++;
+    dino.y += 4;
   }
-  if(jumpTime > 100){ // 100높이 까지 올라가면 점프를 멈춤
+
+  if(jumpTime > 20){ // 100높이 까지 올라가면 점프를 멈춤
     jumping = false
     jumpTime = 0;
   }
@@ -100,7 +134,7 @@ function isCollition(dino, cactus){
 
 var jumping = false;
 document.addEventListener('keydown',  function(e){
-  if(e.code === 'Space'){
+  if(e.code === 'Space' && dino.y >= 200){
     jumping = true;
   }
 })
