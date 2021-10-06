@@ -19,6 +19,7 @@ class Object{
     var image = new Image();
     image.src = this.img;
 
+    ctx.fillStyle = "red"
     ctx.fillRect(this.x,this.y, this.width,this.height);
     ctx.drawImage(image, this.x, this.y);
   }
@@ -55,7 +56,7 @@ class Cactus extends Object{
   }
   cactus3(){
     this.x = 500;
-    this.y = 280;
+    this.y = 150;
     this.width = 50;
     this.height = 30;
     this.img = './image/cactus3.png';
@@ -79,7 +80,7 @@ function update(){
   if(timer % 10 === 0){
     score += 1 + Math.floor(timer / 1000); // 1000프레임 넘을 때마다 추가 점수 +1 
   }
-  if(timer % 100 === 0){  // 120프레임마다 적 생성
+  if(timer % 160 === 0){  // 160프레임마다 적 생성
     var cactus = new Cactus();
     var cactusType = Math.ceil(1 + Math.random() * 2);
     
@@ -111,7 +112,7 @@ function update(){
     dino.y += 4;
   }
 
-  if(jumpTime > 20){ // 100높이 까지 올라가면 점프를 멈춤
+  if(jumpTime > 40){ // 100높이 까지 올라가면 점프를 멈춤
     jumping = false
     jumpTime = 0;
   }
