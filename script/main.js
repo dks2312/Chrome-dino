@@ -1,10 +1,13 @@
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const gravity = 1;
 
 var HTMLScore = document.getElementById('score');
 
-canvas.width = window.innerWidth - 100;
-canvas.height = window.innerHeight - 100;
+
+CANVAS_WIDTH = canvas.width = window.innerWidth - 100;
+CANVAS_HEIGHT = window.innerHeight - 100;
 
 class Object{
   constructor(){
@@ -124,10 +127,12 @@ update();
 
 // 충돌 감지 -> 게임 엔딩
 function isCollition(dino, cactus){
-  var isCollitionX = cactus.x - (dino.x + dino.width);
-  var isCollitionY = cactus.y - (dino.y + dino.height);
+  // (cactus.x - (dino.x + dino.width)) < 0; dino 너비가 cactus x 보다 같거다 클 때 
+  var isCollitionX = (cactus.x - (dino.x + dino.width)) < 0;
+  var isCollitionY = (cactus.y - (dino.y + dino.height)) < 0 && ((cactus.y + cactus.height) - dino.y) > 0;  
+  // (cactus가 dino보다 아래에 있나) && (cactus가 dino보다 위에 있나) === dino의 위 아래를 탐색하면 dino와 cactus의 height 충돌 범위를 알 수 있다 
 
-  if(isCollitionX < 0 && isCollitionY < 0){
+  if(isCollitionX && isCollitionY){
     ctx.clearRect(0,0, cactus.width, cactus.height);
     cancelAnimationFrame(animation);
   }
