@@ -1,5 +1,6 @@
 # Google-dino
- 구글 미니게임 dino의 모작입니다
+ chrome 미니게임 dino의 모작입니다<br>
+ chrome dino 주소 : chrome://dino
  
  <br>canvas로 사용하기 위해 기본적으로 실행돼야 할 코드
 ```
