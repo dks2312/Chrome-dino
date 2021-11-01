@@ -1,13 +1,10 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const gravity = 1;
-
 var HTMLScore = document.getElementById('score');
 
-
-CANVAS_WIDTH = canvas.width = window.innerWidth - 100;
-CANVAS_HEIGHT = window.innerHeight - 100;
+CANVAS_WIDTH = canvas.width = 1000;
+CANVAS_HEIGHT = canvas.height = 250;
 
 class Object{
   constructor(){
@@ -28,6 +25,7 @@ class Object{
   }
 }
 
+// 플레이어
 class Dino extends Object{
   init(){ // this를 사용하기 위해 선언이 되고 난 후에 초기화를 해준다
     this.x = 10;
@@ -41,24 +39,24 @@ var dino = new Dino();
 dino.init();
 dino.draw();
 
-
+// 적
 class Cactus extends Object{
   cactus1(){
-    this.x = 500;
+    this.x = CANVAS_WIDTH - 100;
     this.y = 200;
     this.width = 50;
     this.height = 50;
     this.img = './image/cactus1.png';
   }
   cactus2(){
-    this.x = 500;
+    this.x = CANVAS_WIDTH - 100;
     this.y = 150;
     this.width = 50;
     this.height = 100;
     this.img = './image/cactus2.png';
   }
   cactus3(){
-    this.x = 500;
+    this.x = CANVAS_WIDTH - 100;
     this.y = 150;
     this.width = 50;
     this.height = 30;
@@ -69,21 +67,31 @@ class Cactus extends Object{
 
 var animation;
 var timer = 0;
+var speed = 0;
+var jumpSpeed = 0;
 var cactusArray = [];
-var jumpTime = 0;
 var score = 0;
+var jumping = false;
+const gravity = 1;
 
 function update(){
   animation = requestAnimationFrame(update);
   timer++;
   
-
+  // 화면 초기화 
   ctx.clearRect(0,0, canvas.width, canvas.height);
-  HTMLScore.innerHTML = score;
+  
+
+  // 점수 & 속도 증가
   if(timer % 10 === 0){
-    score += 1 + Math.floor(timer / 1000); // 1000프레임 넘을 때마다 추가 점수 +1 
+    score += 1 + Math.floor(timer / 1000); 
+
+    if(score % 10 == 0)  speed++;
   }
-  if(timer % 160 === 0){  // 160프레임마다 적 생성
+  HTMLScore.innerHTML = score;
+
+  // 적 생성
+  if(timer % 160 === 0){ 
     var cactus = new Cactus();
     var cactusType = Math.ceil(1 + Math.random() * 2);
     
@@ -94,30 +102,37 @@ function update(){
     cactusArray.push(cactus);
   }
 
+  // 적 이동 & 충돌감지
   cactusArray.forEach((a, i, o)=>{
-    // 왼쪽 벽에 닿을 시 오브젝트 삭제
+    // 이동 & 왼쪽 벽에 닿을 시 오브젝트 삭제
+    a.x -= 4 + speed;
     if(a.x < 0){
-      o.splice(i, 1);
+      o.splice(i, 1); //splice 배열 요소 삭제 : i번부터 1번째까지 요소를 삭제
     }
-    a.x -= 4;
 
+    // 모든 적 감지
     isCollition(dino, a);
     
     a.draw();
   })
 
-  
-  if(jumping){ // 점프일 때 위로 올라감
-    dino.y -= 6;
-    jumpTime++;
-  }
-  else if(dino.y < 200){ // 점프가 멈췄을 때 바닥200까지 내려감
-    dino.y += 4;
-  }
+  // 플레이어 점프
+  jumpSpeed = (speed/2);
+  if(jumping){ // 점프 올라감
+    if(dino.y < 30) dino.y -= 3 + jumpSpeed; 
+    else dino.y -= 5 + jumpSpeed;  
 
-  if(jumpTime > 40){ // 100높이 까지 올라가면 점프를 멈춤
-    jumping = false
-    jumpTime = 0;
+    if(dino.y < 0){ // 50 높이 까지 올라가면 점프를 멈춤
+      jumping = false
+    }
+  }
+  else if(dino.y < 200){ // 점프 내려감
+    if(dino.y < 30) dino.y += 3 + jumpSpeed; 
+    else dino.y += 5 + jumpSpeed;  
+
+    if(dino.y > 200){
+      dino.y = CANVAS_HEIGHT - 50;
+    }
   }
 
   dino.draw();
@@ -125,7 +140,7 @@ function update(){
 update();
 
 
-// 충돌 감지 -> 게임 엔딩
+// 충돌 감지 & 게임 엔딩
 function isCollition(dino, cactus){
   // (cactus.x - (dino.x + dino.width)) < 0; dino 너비가 cactus x 보다 같거다 클 때 
   var isCollitionX = (cactus.x - (dino.x + dino.width)) < 0;
@@ -138,8 +153,9 @@ function isCollition(dino, cactus){
   }
 }
 
-var jumping = false;
+// 플레이어 조작
 document.addEventListener('keydown',  function(e){
+  // 스페이스바 : 점프
   if(e.code === 'Space' && dino.y >= 200){
     jumping = true;
   }

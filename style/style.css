@@ -1,0 +1,21 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#room{
+    width: 1000px;
+    height: 400px;
+    margin: 0 auto;
+}
+
+#scorePanel{
+    height: 50px;
+    line-height: 50px;
+}
+#canvas{
+    width: 100%;
+    height: 300px;
+    border: 1px solid black;
+}
