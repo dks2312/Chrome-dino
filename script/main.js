@@ -5,7 +5,6 @@ var HTMLScore = document.getElementById('score');
 
 CANVAS_WIDTH = canvas.width = 1000;
 CANVAS_HEIGHT = canvas.height = 450;
-JUMPING_POWER = 30;
 
 class Object{
   constructor(){
@@ -27,12 +26,30 @@ class Object{
 
 // 플레이어
 class Dino extends Object{
+
   init(){ // this를 사용하기 위해 선언이 되고 난 후에 초기화를 해준다
+    this.dinoImg = {
+      'dino':'./image/dino.png',
+      'prone':'./image/dino_prone.png'
+    }
     this.x = 10;
-    this.y = CANVAS_HEIGHT - 50;
+    this.y = CANVAS_HEIGHT - 100;
     this.width = 50;
-    this.height = 50;
-    this.img = './image/dino.png';
+    this.height = 100;
+    this.img = this.dinoImg['dino'];
+  }
+
+  dinodino(){
+    this.y = CANVAS_HEIGHT - 100;
+    this.width = 50;
+    this.height = 100;
+    this.img = this.dinoImg['dino'];
+  }
+  dinoprone(){
+    this.y = CANVAS_HEIGHT - 70;
+    this.width = 100;
+    this.height = 70;
+    this.img = this.dinoImg['prone'];
   }
 }
 var dino = new Dino();
@@ -57,7 +74,7 @@ class Cactus extends Object{
   }
   cactus3(){
     this.x = CANVAS_WIDTH - 100;
-    this.y = CANVAS_HEIGHT - 70;
+    this.y = CANVAS_HEIGHT - 110;
     this.width = 50;
     this.height = 30;
     this.img = './image/cactus3.png';
@@ -76,14 +93,23 @@ var jumping = false;
 var jumpingPower = 0;
 var jumpingDown = false;
 
+
 // 적 생성
 function cactusInstantiate(){
   var cactus = new Cactus();
-  var cactusType = Math.ceil(1 + Math.random() * 2);
+  var cactusType = Math.round(1 + Math.random() * 2);
   
-  if(cactusType == 1) cactus.cactus1();
-  else if(cactusType == 2) cactus.cactus2();
-  else if(cactusType == 3) cactus.cactus3();
+  switch(cactusType){
+    case 1:
+      cactus.cactus1();
+      break;
+    case 2:
+      cactus.cactus2();
+      break;
+    case 3:
+      cactus.cactus3();
+      break;
+  }
 
   cactusArray.push(cactus);
 }
@@ -120,8 +146,8 @@ function playerMove(){
   // 플레이어 점프
   if(jumping){ // 점프 올라감
     dino.y -= jumpingPower;
-    jumpingPower -= gravity + (speed/10);
-    if(jumpingDown) jumpingPower -= gravity * 3;
+    jumpingPower -= gravity;
+    if(jumpingDown) jumpingPower -= gravity * 5;
 
     if(dino.y > CANVAS_HEIGHT){
       dino.y = CANVAS_HEIGHT - dino.height;
@@ -138,15 +164,14 @@ function update(){
     // 화면 초기화 
     ctx.clearRect(0,0, canvas.width, canvas.height);
     // 점수 & 속도 증가
-    score += 1 + Math.floor(timer / 1000); 
+    score += 1 ; 
     HTMLScore.innerHTML = score;
 
-    if(score % 10 == 0)  speed++;
+    if(score % 10 == 0 && speed < 60)  speed++;
   
- 
     if(timer >= cactusInstantiateTime ){
       cactusInstantiate();
-      cactusInstantiateTime = timer + (150 - speed*3);
+      cactusInstantiateTime = timer  + Math.floor(100 + Math.random() * 50) - speed;
     }
 
     cactusCollition();
@@ -164,12 +189,22 @@ document.addEventListener('keydown',  function(e){
   // 스페이스바 : 점프
   if(e.code === 'Space' && !jumping){
     jumping = true;
-    jumpingPower = JUMPING_POWER + speed;
+    jumpingPower = 40;
   }
 
-  // 아래 방향키 : 빠른 낙하
-  if(e.code === 'ArrowDown' && jumping){
-    jumpingDown = true;
+  // 아래 방향키 : 빠른 낙하 & 수그리기
+  if(e.code === 'ArrowDown'){
+    if(jumping)
+      jumpingDown = true;
+    else
+      dino.dinoprone();
   }
-  else jumpingDown = false
+})
+
+document.addEventListener('keyup',  function(e){
+  // 아래 방향키 : 빠른 낙하 취소 & 수그리기 취소
+  if(e.code === 'ArrowDown'){
+    jumpingDown = false;
+    dino.dinodino();
+  }
 })
