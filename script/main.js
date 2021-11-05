@@ -61,12 +61,12 @@ window.addEventListener('DOMContentLoaded', function(){
       this.y = CANVAS_HEIGHT - 70;
       this.width = 100;
       this.height = 70;
-      this.img = this.dinoImg['prone'];
+      this.img = this.dinoImg['prone'][0];
     }
     dinoproneAni(){
       if(this.aniIndex < this.dinoImg['prone'].length -1) this.aniIndex++;
       else this.aniIndex = 0;
-      
+
       this.img = this.dinoImg['prone'][this.aniIndex];
     }
   }
@@ -173,6 +173,7 @@ window.addEventListener('DOMContentLoaded', function(){
         jumping = false;
       }
     }
+    
   }
 
   // 플레이어 애니메이션
@@ -225,10 +226,10 @@ window.addEventListener('DOMContentLoaded', function(){
     // 아래 방향키 : 빠른 낙하 & 수그리기
     if(e.code === 'ArrowDown'){
       
-      if(jumping){
+      if(!jumpingDown && jumping){
         jumpingDown = true;
       }
-      else{
+      else if(!dinoDown){
         dinoDown = true;
         dino.dinoprone();
       }
