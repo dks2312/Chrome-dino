@@ -37,7 +37,7 @@ window.addEventListener('DOMContentLoaded', function(){
       this.aniIndex = 0;
       this.x = 10;
       this.y = CANVAS_HEIGHT - 100;
-      this.width = 50;
+      this.width = 60;
       this.height = 100;
       this.img = this.dinoImg['dino'];
     }
@@ -45,12 +45,12 @@ window.addEventListener('DOMContentLoaded', function(){
     dinodino(){
       this.aniIndex = 0;
       this.y = CANVAS_HEIGHT - 100;
-      this.width = 50;
+      this.width = 60;
       this.height = 100;
       this.img = this.dinoImg['dinoRun'][0];
     }
     dinodinoAni(){
-      if(this.aniIndex < this.dinoImg['dinoRun'].length) this.aniIndex++;
+      if(this.aniIndex < this.dinoImg['dinoRun'].length -1) this.aniIndex++;
       else this.aniIndex = 0;
 
       this.img = this.dinoImg['dinoRun'][this.aniIndex];
@@ -65,7 +65,7 @@ window.addEventListener('DOMContentLoaded', function(){
       this.img = this.dinoImg['prone'];
     }
     dinoproneAni(){
-      if(this.aniIndex < this.dinoImg['prone'].length) this.aniIndex++;
+      if(this.aniIndex < this.dinoImg['prone'].length -1) this.aniIndex++;
       else this.aniIndex = 0;
 
       this.img = this.dinoImg['prone'][this.aniIndex];
@@ -168,20 +168,23 @@ window.addEventListener('DOMContentLoaded', function(){
     if(jumping){ // 점프 올라감
       dino.y -= jumpingPower;
       jumpingPower -= gravity;
-      if(jumpingDown) jumpingPower -= gravity * 5;
+      if(jumpingDown) jumpingPower -= gravity * 10;
 
-      if(dino.y > CANVAS_HEIGHT){
+      if(dino.y - jumpingPower > CANVAS_HEIGHT){
         dino.y = CANVAS_HEIGHT - dino.height;
         jumping = false;
       }
     }
 
-    // 플레이어 애니메이션
+  }
+  // 플레이어 애니메이션
+  function playerAni(){
     if(dinoDown) dino.dinoproneAni();
     else dino.dinodinoAni();
-    
-    dino.draw();
   }
+
+
+
   var cactusInstantiateTime = 0;
   function update(){
     animation = requestAnimationFrame(update);
@@ -201,14 +204,16 @@ window.addEventListener('DOMContentLoaded', function(){
         cactusInstantiateTime = timer  + Math.floor(100 + Math.random() * 50) - speed;
       }
 
+      playerMove();
+      playerAni();
+
       cactusCollition();
 
-      playerMove();
-
-      
+      dino.draw();
     }
   }
   update();
+
 
 
   // 플레이어 조작
