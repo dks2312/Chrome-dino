@@ -2,7 +2,7 @@
  chrome 미니게임 dino의 모작입니다<br>
  chrome dino 주소 : chrome://dino
  
- <br>canvas로 사용하기 위해 기본적으로 실행돼야 할 코드
+ <br>canvas를 사용하기 위해 기본적으로 실행돼야 할 코드
 ```
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -29,7 +29,7 @@ function update(){
 update();
 ```
 
-<br>``requestAnimationFrame(update);``만 써도 잘 작동하지만 따로 변수에 저장한 이유는 이 값을 ``window.cancelAnimationFrame()`` 에 전달해 콜백 요청을 취소할 수 있습니다.(정지)
+<br>``requestAnimationFrame(update);``만 써도 잘 작동하지만 따로 변수에 저장한 이유는 이 값을 ``window.cancelAnimationFrame()`` 에 전달해 콜백 요청을 취소할 수 있다.(정지)
 ```
 cancelAnimationFrame(animation);
 ```
