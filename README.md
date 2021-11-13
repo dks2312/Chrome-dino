@@ -23,7 +23,7 @@ ctx.drawImage(dinoImg, this.x, this.y); // 그림 삽입
 이것으로 플레이어의 위치나 점수 기타 등등을 계속 갱신할 수 있다
 ```
 function update(){
-  // 컴퓨터 사양마다 초당 실행 횟수는 다르다
+  // 프레임마다 update함수를 불러온다
   animation = requestAnimationFrame(update);
 }
 update();
