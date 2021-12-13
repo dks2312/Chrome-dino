@@ -1,4 +1,4 @@
-# Google-dino
+# Chrome-dino
  chrome 미니게임 dino의 모작입니다<br>
  chrome dino 주소 : chrome://dino
  
