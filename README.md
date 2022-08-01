@@ -1,6 +1,7 @@
 # Chrome-dino
  chrome 미니게임 dino의 모작입니다<br>
- chrome dino 주소 : chrome://dino
+ chrome dino 주소 : chrome://dino <br>
+ chrome 미니게임 주소  : https://dks2312.github.io/Chrome-dino/
  
  <br>canvas를 사용하기 위해 기본적으로 실행돼야 할 코드
 ```
